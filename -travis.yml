@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t chunchen/react-test -f ./client/Dockerfile.dev' ./client
+
+script:
+  - docker run chunchen/react-test npm test --coverage
+
+after_success:
+  - docker build -t chunchen/multi-client ./client
+  - docker build -t chunchen/multi-nginx ./nginx
+  - docker build -t chunchen/multi-server ./server
+  - docker build -t chunchen/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and oush them to Docker Hub
+  - docker push chunchen/multi-client
+  - docker push chunchen/multi-nginx
+  - docker push chunchen/multi-server
+  - docker push chunchen/multi-worker
