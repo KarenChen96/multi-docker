@@ -3,7 +3,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t chunchen/react-test -f ./client/Dockerfile.dev' ./client
+  - docker build -t chunchen/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run chunchen/react-test npm test -- --coverage
